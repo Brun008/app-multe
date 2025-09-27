@@ -1,0 +1,15 @@
+{
+  "name": "gestione-multe-squadra",
+  "version": "1.0.0",
+  "description": "App gestione multe squadra",
+  "main": "index.html",
+  "scripts": {
+    "build-cordova": "cordova build android",
+    "serve": "python -m http.server 8000",
+    "cordova-prepare": "cordova prepare"
+  },
+  "devDependencies": {
+    "cordova": "^12.0.0",
+    "cordova-android": "^12.0.0"
+  }
+}

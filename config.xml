@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.tuasquadra.multe" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+    <name>Gestione Multe Squadra</name>
+    <description>App per gestire le multe della squadra</description>
+    <author email="info@example.com">Team Manager</author>
+
+    <content src="index.html" />
+    <access origin="*" />
+
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <preference name="android-minSdkVersion" value="21" />
+        <preference name="android-targetSdkVersion" value="33" />
+    </platform>
+
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="Orientation" value="portrait" />
+    <preference name="StatusBarBackgroundColor" value="#1976D2" />
+</widget>

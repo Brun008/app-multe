@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Multe Squadra</title>
+    <meta name="theme-color" content="#1976D2">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F8F9FA;
+            color: #212121;
+            line-height: 1.5;
+        }
+
+        .app {
+            max-width: 100%;
+            min-height: 100vh;
+            background: white;
+        }
+
+        /* Header */
+        .header {
+            background: #1976D2;
+            color: white;
+            padding: 16px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #E0E0E0;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #757575;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-tab.active {
+            color: #1976D2;
+            border-bottom-color: #1976D2;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 20px;
+            padding-bottom: 80px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #1976D2;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px;
+            background: #F5F5F5;
+            border-bottom: 1px solid #E0E0E0;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #424242;
+            font-weight: 500;
+        }
+
+        .input, .select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .input:focus, .select:focus {
+            outline: none;
+            border-color: #1976D2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1976D2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565C0;
+        }
+
+        .btn-secondary {
+            background: #42A5F5;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #2196F3;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #1976D2;
+            border: 1px solid #1976D2;
+        }
+
+        .btn-outline:hover {
+            background: #E3F2FD;
+        }
+
+        .btn-danger {
+            background: #F44336;
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* List Items */
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Fine Item */
+        .fine-item {
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: white;
+        }
+
+        .fine-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .fine-amount {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1976D2;
+        }
+
+        .fine-date {
+            font-size: 12px;
+            color: #757575;
+        }
+
+        .fine-reason {
+            margin: 8px 0;
+            color: #424242;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #E0E0E0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #1976D2;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #E0E0E0;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1976D2;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fab:hover {
+            background: #1565C0;
+        }
+
+        /* Utilities */
+        .text-center { text-align: center; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .hidden { display: none; }
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .align-center { align-items: center; }
+        .gap-10 { gap: 10px; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #757575;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Summary */
+        .summary {
+            background: linear-gradient(135deg, #1976D2, #42A5F5);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-title {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <h1>⚽ Gestione Multe Squadra</h1>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="team">
+                <div class="nav-icon">👥</div>
+                <div>Squadra</div>
+            </button>
+            <button class="nav-tab" data-section="active">
+                <div class="nav-icon">⚠️</div>
+                <div>Multe Attive</div>
+            </button>
+            <button class="nav-tab" data-section="history">
+                <div class="nav-icon">📋</div>
+                <div>Storico</div>
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sezione Squadra -->
+            <section id="team-section" class="section active">
+                <h2 class="section-title">Gestione Squadra</h2>
+
+                <div class="card">
+                    <div class="card-header">Aggiungi Nuovo Membro</div>
+                    <div class="card-body">
+                        <div class="flex gap-10">
+                            <input type="text" id="memberName" class="input" placeholder="Nome del giocatore" style="flex: 1;">
+                            <button id="addMember" class="btn btn-primary">Aggiungi</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Lista Squadra</div>
+                    <div class="card-body" id="membersList">
+                        <!-- I membri verranno aggiunti qui -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sezione Multe Attive -->
+            <section id="active-section" class="section">
+                <h2 class="section-title">Multe Attive</h2>
+
+                <div class="summary" id="activeSummary">
+                    <div class="summary-title">Totale multe attive</div>
+                    <div class="summary-value" id="activeTotalAmount">€ 0.00</div>
+                    <div style="font-size: 14px; margin-top: 8px;" id="activeTotalCount">0 multe</div>
+                </div>
+
+                <div id="activeFinesList">
+                    <!-- Le multe attive verranno aggiunte qui -->
+                </div>
+            </section>
+
+            <!-- Sezione Storico -->
+            <section id="history-section" class="section">
+                <h2 class="section-title">Storico Multe Pagate</h2>
+
+                <div class="card">
+                    <div class="card-header">Filtri</div>
+                    <div class="card-body">
+                        <select id="historyFilter" class="select">
+                            <option value="">Tutti i giocatori</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="historyFinesList">
+                    <!-- Le multe pagate verranno aggiunte qui -->
+                </div>
+            </section>
+        </main>
+
+        <!-- FAB -->
+        <button class="fab" id="addFineBtn">+</button>
+
+        <!-- Modal Aggiungi Multa -->
+        <div id="addFineModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Aggiungi Multa</h3>
+                    <button id="closeModal" class="btn btn-outline btn-small">Chiudi</button>
+                </div>
+                <form id="addFineForm" class="modal-body">
+                    <div class="form-group">
+                        <label>Giocatore</label>
+                        <select id="finePlayer" class="select" required>
+                            <option value="">Seleziona giocatore</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="fineDate" class="input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Importo (€)</label>
+                        <input type="number" id="fineAmount" class="input" min="0" step="0.01" placeholder="10.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo</label>
+                        <input type="text" id="fineReason" class="input" placeholder="Motivo della multa" required>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" id="cancelFine" class="btn btn-outline">Annulla</button>
+                    <button type="submit" form="addFineForm" class="btn btn-primary">Aggiungi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Conferma -->
+        <div id="confirmModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Conferma</h3>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmText">Sei sicuro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelConfirm" class="btn btn-outline">Annulla</button>
+                    <button id="confirmAction" class="btn btn-primary">Conferma</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Stato dell'applicazione
+        let appData = {
+            members: [],
+            activeFines: [],
+            paidFines: [],
+            currentMemberId: 1,
+            currentFineId: 1
+        };
+
+        // Chiavi localStorage
+        const STORAGE_KEY = 'multe_squadra_data';
+
+        // Elementi DOM
+        let elements = {};
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeElements();
+            loadData();
+            setupEventListeners();
+            updateUI();
+            switchSection('team');
+        });
+
+        function initializeElements() {
+            elements = {
+                // Navigation
+                navTabs: document.querySelectorAll('.nav-tab'),
+                sections: document.querySelectorAll('.section'),
+
+                // Team section
+                memberName: document.getElementById('memberName'),
+                addMember: document.getElementById('addMember'),
+                membersList: document.getElementById('membersList'),
+
+                // Active fines section
+                activeSummary: document.getElementById('activeSummary'),
+                activeTotalAmount: document.getElementById('activeTotalAmount'),
+                activeTotalCount: document.getElementById('activeTotalCount'),
+                activeFinesList: document.getElementById('activeFinesList'),
+
+                // History section
+                historyFilter: document.getElementById('historyFilter'),
+                historyFinesList: document.getElementById('historyFinesList'),
+
+                // Modals
+                addFineBtn: document.getElementById('addFineBtn'),
+                addFineModal: document.getElementById('addFineModal'),
+                closeModal: document.getElementById('closeModal'),
+                addFineForm: document.getElementById('addFineForm'),
+                finePlayer: document.getElementById('finePlayer'),
+                fineDate: document.getElementById('fineDate'),
+                fineAmount: document.getElementById('fineAmount'),
+                fineReason: document.getElementById('fineReason'),
+                cancelFine: document.getElementById('cancelFine'),
+
+                confirmModal: document.getElementById('confirmModal'),
+                confirmText: document.getElementById('confirmText'),
+                cancelConfirm: document.getElementById('cancelConfirm'),
+                confirmAction: document.getElementById('confirmAction')
+            };
+        }
+
+        function setupEventListeners() {
+            // Navigation
+            elements.navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const section = tab.dataset.section;
+                    switchSection(section);
+                });
+            });
+
+            // Team management
+            elements.addMember.addEventListener('click', addMember);
+            elements.memberName.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addMember();
+            });
+
+            // Fine management
+            elements.addFineBtn.addEventListener('click', showAddFineModal);
+            elements.closeModal.addEventListener('click', hideAddFineModal);
+            elements.cancelFine.addEventListener('click', hideAddFineModal);
+            elements.addFineForm.addEventListener('submit', addFine);
+
+            // History filter
+            elements.historyFilter.addEventListener('change', updateHistoryList);
+
+            // Confirm modal
+            elements.cancelConfirm.addEventListener('click', hideConfirmModal);
+
+            // Set today's date as default
+            elements.fineDate.valueAsDate = new Date();
+        }
+
+        function switchSection(sectionName) {
+            // Update nav tabs
+            elements.navTabs.forEach(tab => {
+                if (tab.dataset.section === sectionName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            // Update sections
+            elements.sections.forEach(section => {
+                if (section.id === sectionName + '-section') {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            // Update UI for current section
+            updateUI();
+        }
+
+        function addMember() {
+            const name = elements.memberName.value.trim();
+            if (!name) {
+                alert('Inserisci il nome del giocatore');
+                return;
+            }
+
+            const member = {
+                id: appData.currentMemberId++,
+                name: name
+            };
+
+            appData.members.push(member);
+            elements.memberName.value = '';
+            saveData();
+            updateUI();
+        }
+
+        function removeMember(memberId) {
+            showConfirmModal('Sei sicuro di voler rimuovere questo giocatore? Tutte le sue multe verranno eliminate.', () => {
+                appData.members = appData.members.filter(m => m.id !== memberId);
+                appData.activeFines = appData.activeFines.filter(f => f.memberId !== memberId);
+                appData.paidFines = appData.paidFines.filter(f => f.memberId !== memberId);
+                saveData();
+                updateUI();
+                hideConfirmModal();
+            });
+        }
+
+        function showAddFineModal() {
+            if (appData.members.length === 0) {
+                alert('Aggiungi prima almeno un giocatore alla squadra');
+                return;
+            }
+
+            // Populate player select
+            elements.finePlayer.innerHTML = '<option value="">Seleziona giocatore</option>';
+            appData.members.forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.id;
+                option.textContent = member.name;
+                elements.finePlayer.appendChild(option);
+            });
+
+            elements.addFineModal.classList.remove('hidden');
+        }
+
+        function hideAddFineModal() {
+            elements.addFineModal.classList.add('hidden');
+            elements.addFineForm.reset();
+            elements.fineDate.valueAsDate = new Date();
+        }
+
+        function addFine(e) {
+            e.preventDefault();
+
+            const playerId = parseInt(elements.finePlayer.value);
+            const date = elements.fineDate.value;
+            const amount = parseFloat(elements.fineAmount.value);
+            const reason = elements.fineReason.value.trim();
+
+            if (!playerId || !date || !amount || !reason) {
+                alert('Compila tutti i campi');
+                return;
+            }
+
+            const fine = {
+                id: appData.currentFineId++,
+                memberId: playerId,
+                date: date,
+                amount: amount,
+                reason: reason,
+                status: 'active'
+            };
+
+            appData.activeFines.push(fine);
+            saveData();
+            updateUI();
+            hideAddFineModal();
+        }
+
+        function payFine(fineId) {
+            const fine = appData.activeFines.find(f => f.id === fineId);
+            if (!fine) return;
+
+            showConfirmModal(`Segnare come pagata la multa di €${fine.amount.toFixed(2)}?`, () => {
+                // Move from active to paid
+                fine.status = 'paid';
+                fine.paidDate = new Date().toISOString().split('T')[0];
+
+                appData.paidFines.push(fine);
+                appData.activeFines = appData.activeFines.filter(f => f.id !== fineId);
+
+                saveData();
+                updateUI();
+                hideConfirmModal();
+            });
+        }
+
+        function showConfirmModal(text, callback) {
+            elements.confirmText.textContent = text;
+            elements.confirmAction.onclick = callback;
+            elements.confirmModal.classList.remove('hidden');
+        }
+
+        function hideConfirmModal() {
+            elements.confirmModal.classList.add('hidden');
+        }
+
+        function updateUI() {
+            updateMembersList();
+            updateActiveFinesList();
+            updateActiveSummary();
+            updateHistoryFilter();
+            updateHistoryList();
+        }
+
+        function updateMembersList() {
+            const container = elements.membersList;
+
+            if (appData.members.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><div>Nessun giocatore in squadra</div></div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            appData.members.forEach(member => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <span>${member.name}</span>
+                    <button class="btn btn-danger btn-small" onclick="removeMember(${member.id})">Rimuovi</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateActiveFinesList() {
+            const container = elements.activeFinesList;
+
+            if (appData.activeFines.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div>Nessuna multa attiva</div></div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            appData.activeFines.forEach(fine => {
+                const member = appData.members.find(m => m.id === fine.memberId);
+                if (!member) return;
+
+                const div = document.createElement('div');
+                div.className = 'fine-item';
+                div.innerHTML = `
+                    <div class="fine-header">
+                        <div class="fine-amount">€${fine.amount.toFixed(2)}</div>
+                        <div class="fine-date">${formatDate(fine.date)}</div>
+                    </div>
+                    <div><strong>${member.name}</strong></div>
+                    <div class="fine-reason">${fine.reason}</div>
+                    <button class="btn btn-secondary btn-small" onclick="payFine(${fine.id})">Segna come Pagata</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateActiveSummary() {
+            const totalAmount = appData.activeFines.reduce((sum, fine) => sum + fine.amount, 0);
+            const totalCount = appData.activeFines.length;
+
+            elements.activeTotalAmount.textContent = `€ ${totalAmount.toFixed(2)}`;
+            elements.activeTotalCount.textContent = `${totalCount} multe`;
+        }
+
+        function updateHistoryFilter() {
+            elements.historyFilter.innerHTML = '<option value="">Tutti i giocatori</option>';
+            appData.members.forEach(member => {
+                const option = document.createElement('option');
+                option.value = member.id;
+                option.textContent = member.name;
+                elements.historyFilter.appendChild(option);
+            });
+        }
+
+        function updateHistoryList() {
+            const container = elements.historyFinesList;
+            const filterId = elements.historyFilter.value;
+
+            let filteredFines = appData.paidFines;
+            if (filterId) {
+                filteredFines = appData.paidFines.filter(f => f.memberId == filterId);
+            }
+
+            if (filteredFines.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div>Nessuna multa pagata</div></div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filteredFines.forEach(fine => {
+                const member = appData.members.find(m => m.id === fine.memberId);
+                if (!member) return;
+
+                const div = document.createElement('div');
+                div.className = 'fine-item';
+                div.innerHTML = `
+                    <div class="fine-header">
+                        <div class="fine-amount">€${fine.amount.toFixed(2)}</div>
+                        <div class="fine-date">Multa: ${formatDate(fine.date)}</div>
+                    </div>
+                    <div><strong>${member.name}</strong></div>
+                    <div class="fine-reason">${fine.reason}</div>
+                    <div style="font-size: 12px; color: #4CAF50; margin-top: 8px;">
+                        ✅ Pagata il ${formatDate(fine.paidDate)}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('it-IT');
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+                console.log('Dati salvati:', appData);
+            } catch (error) {
+                console.error('Errore nel salvare i dati:', error);
+                alert('Errore nel salvare i dati');
+            }
+        }
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    appData = JSON.parse(saved);
+                    console.log('Dati caricati:', appData);
+                } else {
+                    // Dati di esempio solo se non ci sono dati salvati
+                    appData = {
+                        members: [
+                            { id: 1, name: 'Marco Rossi' },
+                            { id: 2, name: 'Luca Bianchi' }
+                        ],
+                        activeFines: [
+                            { id: 1, memberId: 1, date: '2025-09-20', amount: 10, reason: 'Ritardo allenamento', status: 'active' }
+                        ],
+                        paidFines: [
+                            { id: 2, memberId: 2, date: '2025-09-15', amount: 20, reason: 'Cartellino rosso', status: 'paid', paidDate: '2025-09-18' }
+                        ],
+                        currentMemberId: 3,
+                        currentFineId: 3
+                    };
+                    saveData();
+                }
+            } catch (error) {
+                console.error('Errore nel caricare i dati:', error);
+                alert('Errore nel caricare i dati');
+            }
+        }
+
+        // Funzione per esportare i dati
+        function exportData() {
+            const dataStr = JSON.stringify(appData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'multe_squadra_backup.json';
+            link.click();
+        }
+
+        // Aggiungi pulsante export nell'header (opzionale)
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.querySelector('.header');
+            const exportBtn = document.createElement('button');
+            exportBtn.textContent = '💾 Backup';
+            exportBtn.style.cssText = 'position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer;';
+            exportBtn.onclick = exportData;
+            header.style.position = 'relative';
+            header.appendChild(exportBtn);
+        });
+    </script>
+</body>
+</html>
